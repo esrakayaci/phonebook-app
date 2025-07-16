@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Contact, ContactService } from '../../services/contact.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 declare var window: any; 
 @Component({
   selector: 'app-contacts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxPaginationModule],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
@@ -19,6 +20,8 @@ export class ContactsComponent implements OnInit {
 
   contacts: Contact[] = [];
   selectedContact: Contact | null = null;
+  selectedContactId: number | null = null;
+  page: number = 1;
 
   newContact: Partial<Contact> = {
     firstName: '',
@@ -44,7 +47,7 @@ export class ContactsComponent implements OnInit {
 
   addContact() {
   if (!this.newContact.firstName || !this.newContact.lastName || !this.newContact.phoneNumber) {
-    this.toastr.error('Please fill in all fields.', 'Error');
+    this.toastr.error('Please fill in all fields.', '❌ Error');
     return;
   }
 
@@ -62,16 +65,14 @@ export class ContactsComponent implements OnInit {
         }
       }
 
-      this.toastr.success('Contact added successfully!', 'Success');
+      this.toastr.success('Contact added successfully!', '✅ Added');
     },
     error: (err) => {
       console.error('Error adding contact:', err);
-      this.toastr.error('An error occurred while adding the contact.', 'Error');
+      this.toastr.error('An error occurred while adding the contact.', '❌ Error');
     }
   });
 }
-
-
 
   deleteContact(id: number) {
     if (!confirm('Are you sure you want to delete this contact?')) {
@@ -81,18 +82,18 @@ export class ContactsComponent implements OnInit {
     this.contactService.delete(id).subscribe({
       next: () => {
         this.loadContacts();
-        this.toastr.success('Contact deleted successfully!', 'Success');
+        this.toastr.success('Contact deleted successfully!', '✅ Deleted');
       },
       error: (err) => {
         console.error('Error deleting contact:', err);
-        this.toastr.error('An error occurred while deleting the contact.', 'Error');
+        this.toastr.error('An error occurred while deleting the contact.', '❌ Error');
       }
     });
   }
 
   editContact(contact: Contact) {
     this.selectedContact = { ...contact };
-    // Modal açmak için bu kısım yeterli çünkü data-bs-toggle otomatik açar
+    this.selectedContactId = contact.id;
   }
 
   updateContact() {
@@ -112,11 +113,11 @@ export class ContactsComponent implements OnInit {
         }
       }
 
-      this.toastr.success('Contact updated successfully!', 'Success');
+      this.toastr.success('Contact updated successfully!', '✅ Updated');
     },
     error: (err) => {
       console.error('Error updating contact:', err);
-      this.toastr.error('An error occurred while updating the contact.', 'Error');
+      this.toastr.error('An error occurred while updating the contact.', '❌ Update Failed');
     }
   });
 }
@@ -125,6 +126,7 @@ export class ContactsComponent implements OnInit {
   cancelEdit() {
     this.selectedContact = null;
     this.closeModal();
+    this.selectedContactId = null;
   }
 
   closeModal() {

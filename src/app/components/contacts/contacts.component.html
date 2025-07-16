@@ -1,9 +1,11 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Contact Directory</h2>
+  <h2 class="mb-4">Contacts</h2>
 
-<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addContactModal">
+<button type="submit" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addContactModal">
   Add Contact
 </button>
+<p class="text-muted">Total Contacts: {{ contacts.length }}</p>
+
 
 <table class="table table-bordered table-striped">
   <thead class="table-light">
@@ -15,7 +17,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let contact of contacts">
+    <tr *ngFor="let contact of contacts | paginate: { itemsPerPage: 10, currentPage: page}"
+    [ngClass]="{'table-active': contact.id === selectedContactId}">
       <td>{{ contact.firstName }}</td>
       <td>{{ contact.lastName }}</td>
       <td>{{ contact.phoneNumber }}</td>
@@ -27,6 +30,11 @@
     </tr>
   </tbody>
 </table>
+<div class="d-flex justify-content-center mt-3">
+  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+</div>
+
+
 
 <!-- Edit Contact Modal -->
 <div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
@@ -79,6 +87,7 @@
             required
             [(ngModel)]="newContact.firstName"
             class="form-control"
+            autocomplete="off"
           />
         </div>
         <div class="mb-3">
@@ -90,6 +99,7 @@
             required
             [(ngModel)]="newContact.lastName"
             class="form-control"
+            autocomplete="off"
           />
         </div>
         <div class="mb-3">
@@ -98,10 +108,14 @@
             type="text"
             id="phoneNumber"
             name="phoneNumber"
+            pattern="^\+[0-9]{12}$"
             required
             [(ngModel)]="newContact.phoneNumber"
             class="form-control"
+            autocomplete="off"
+            placeholder="+905555555555"
           />
+          <small class="text-muted">Format: + followed by 12 digits (e.g., +905555555555)</small>
         </div>
       </div>
       <div class="modal-footer">
