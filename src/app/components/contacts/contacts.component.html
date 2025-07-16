@@ -1,12 +1,17 @@
-<h2>Contact Directory</h2>
+<div class="container mt-4">
+  <h2 class="mb-4">Contact Directory</h2>
 
-<table border="1" width="100%" cellpadding="5">
-  <thead>
+<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addContactModal">
+  Add Contact
+</button>
+
+<table class="table table-bordered table-striped">
+  <thead class="table-light">
     <tr>
       <th>First Name</th>
       <th>Last Name</th>
       <th>Phone Number</th>
-      <th>Actions</th>
+      <th style="width: 150px;">Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -15,68 +20,96 @@
       <td>{{ contact.lastName }}</td>
       <td>{{ contact.phoneNumber }}</td>
       <td>
-        <button (click)="editContact(contact)">Edit</button>
-        <button (click)="deleteContact(contact.id)">Delete</button>
+        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editContactModal" (click)="editContact(contact)">Edit</button>
+
+        <button class="btn btn-sm btn-danger" (click)="deleteContact(contact.id)">Delete</button>
       </td>
     </tr>
   </tbody>
 </table>
 
-<hr>
-
-<!-- Edit Contact Form -->
-<div *ngIf="selectedContact">
-  <h3>Edit Contact</h3>
-  <label>
-    First Name:
-    <input [(ngModel)]="selectedContact.firstName" name="editFirstName" />
-  </label>
-  <br>
-  <label>
-    Last Name:
-    <input [(ngModel)]="selectedContact.lastName" name="editLastName" />
-  </label>
-  <br>
-  <label>
-    Phone Number:
-    <input [(ngModel)]="selectedContact.phoneNumber" name="editPhoneNumber" />
-  </label>
-  <br><br>
-  <button (click)="updateContact()">Update</button>
-  <button (click)="cancelEdit()">Cancel</button>
+<!-- Edit Contact Modal -->
+<div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editContactModalLabel">Edit Contact</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cancelEdit()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedContact">
+        <form #editForm="ngForm">
+          <div class="mb-3">
+            <label for="editFirstName" class="form-label">First Name</label>
+            <input type="text" id="editFirstName" class="form-control" [(ngModel)]="selectedContact.firstName" name="editFirstName" required>
+          </div>
+          <div class="mb-3">
+            <label for="editLastName" class="form-label">Last Name</label>
+            <input type="text" id="editLastName" class="form-control" [(ngModel)]="selectedContact.lastName" name="editLastName" required>
+          </div>
+          <div class="mb-3">
+            <label for="editPhoneNumber" class="form-label">Phone Number</label>
+            <input type="text" id="editPhoneNumber" class="form-control" [(ngModel)]="selectedContact.phoneNumber" name="editPhoneNumber" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancelEdit()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="updateContact(); closeModal()">Save Changes</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<hr>
 
-<!-- Add New Contact Form -->
-<h3>Add New Contact</h3>
-<form (ngSubmit)="addContact()" #contactForm="ngForm">
-  <label for="firstName">First Name:</label><br>
-  <input
-    type="text"
-    id="firstName"
-    name="firstName"
-    required
-    [(ngModel)]="newContact.firstName"
-  /><br><br>
+<!-- Add Contact Modal -->
+<div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form (ngSubmit)="addContact()" #contactForm="ngForm" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addContactModalLabel">Add New Contact</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="firstName" class="form-label">First Name</label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            required
+            [(ngModel)]="newContact.firstName"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            required
+            [(ngModel)]="newContact.lastName"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="phoneNumber" class="form-label">Phone Number</label>
+          <input
+            type="text"
+            id="phoneNumber"
+            name="phoneNumber"
+            required
+            [(ngModel)]="newContact.phoneNumber"
+            class="form-control"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add Contact</button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
 
-  <label for="lastName">Last Name:</label><br>
-  <input
-    type="text"
-    id="lastName"
-    name="lastName"
-    required
-    [(ngModel)]="newContact.lastName"
-  /><br><br>
-
-  <label for="phoneNumber">Phone Number:</label><br>
-  <input
-    type="text"
-    id="phoneNumber"
-    name="phoneNumber"
-    required
-    [(ngModel)]="newContact.phoneNumber"
-  /><br><br>
-
-  <button type="submit">Add Contact</button>
-</form>

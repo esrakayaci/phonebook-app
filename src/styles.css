@@ -1,1 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+@import "ngx-toastr/toastr";
+
+.toast {
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  border-radius: 6px;
+}
