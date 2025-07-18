@@ -1,0 +1,32 @@
+{
+  "TITLE": "Contacts List",
+  "ADD_CONTACT": "Add Contact",
+  "FIRST_NAME": "First Name",
+  "LAST_NAME": "Last Name",
+  "PHONE_NUMBER": "Phone Number",
+  "SUBMIT": "Submit",
+  "CANCEL": "Cancel",
+  "DELETE": "Delete",
+  "EDIT": "Edit",
+  "TOTAL_CONTACTS": "Total Contacts",
+  "ACTIONS": "Actions",
+  "CONTACT": "Contact",
+  "PHONE_FORMAT_INFO": "Format: + followed by 12 digits (e.g., +905555555555)",
+
+"SUCCESS": {
+  "TITLE": "Success",
+  "ADDED": "Contact added successfully!",
+  "UPDATED": "Contact updated successfully!",
+  "DELETED": "Contact deleted successfully!"
+},
+"ERROR": {
+  "TITLE": "Error",
+  "FILL_ALL_FIELDS": "Please fill in all fields.",
+  "ADD": "An error occurred while adding the contact.",
+  "UPDATE": "An error occurred while updating the contact.",
+  "DELETE": "An error occurred while deleting the contact."
+},
+"CONFIRM": {
+  "DELETE": "Are you sure you want to delete this contact?"
+}
+}

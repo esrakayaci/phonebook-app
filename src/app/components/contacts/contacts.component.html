@@ -1,129 +1,249 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Contacts</h2>
-
-<button type="submit" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addContactModal">
-  Add Contact
-</button>
-<p class="text-muted">Total Contacts: {{ contacts.length }}</p>
-
-
-<table class="table table-bordered table-striped">
-  <thead class="table-light">
-    <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Phone Number</th>
-      <th style="width: 150px;">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let contact of contacts | paginate: { itemsPerPage: 10, currentPage: page}"
-    [ngClass]="{'table-active': contact.id === selectedContactId}">
-      <td>{{ contact.firstName }}</td>
-      <td>{{ contact.lastName }}</td>
-      <td>{{ contact.phoneNumber }}</td>
-      <td>
-        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editContactModal" (click)="editContact(contact)">Edit</button>
-
-        <button class="btn btn-sm btn-danger" (click)="deleteContact(contact.id)">Delete</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<div class="d-flex justify-content-center mt-3">
-  <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  <div class="dropdown text-end">
+  <button
+    class="btn btn-outline-primary dropdown-toggle px-3 py-2 rounded-pill"
+    type="button"
+    id="languageDropdown"
+    data-bs-toggle="dropdown"
+    aria-expanded="false">
+    🌐 {{ currentLang === 'en' ? 'English' : 'Türkçe' }}
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+    <li><a class="dropdown-item" (click)="switchLanguage('en')">English </a></li>
+    <li><a class="dropdown-item" (click)="switchLanguage('tr')">Türkçe </a></li>
+  </ul>
 </div>
 
 
+  <h2 class="mb-4">{{ 'TITLE' | translate }}</h2>
 
-<!-- Edit Contact Modal -->
-<div class="modal fade" id="editContactModal" tabindex="-1" aria-labelledby="editContactModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editContactModalLabel">Edit Contact</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="cancelEdit()"></button>
-      </div>
-      <div class="modal-body" *ngIf="selectedContact">
-        <form #editForm="ngForm">
-          <div class="mb-3">
-            <label for="editFirstName" class="form-label">First Name</label>
-            <input type="text" id="editFirstName" class="form-control" [(ngModel)]="selectedContact.firstName" name="editFirstName" required>
-          </div>
-          <div class="mb-3">
-            <label for="editLastName" class="form-label">Last Name</label>
-            <input type="text" id="editLastName" class="form-control" [(ngModel)]="selectedContact.lastName" name="editLastName" required>
-          </div>
-          <div class="mb-3">
-            <label for="editPhoneNumber" class="form-label">Phone Number</label>
-            <input type="text" id="editPhoneNumber" class="form-control" [(ngModel)]="selectedContact.phoneNumber" name="editPhoneNumber" required>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancelEdit()">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="updateContact(); closeModal()">Save Changes</button>
+  <button
+    type="submit"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#addContactModal"
+  >
+    {{ 'ADD_CONTACT' | translate }}
+  </button>
+
+  <p class="text-muted">
+    {{ 'TOTAL_CONTACTS' | translate }}: {{ contacts.length }}
+  </p>
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-light">
+      <tr>
+        <th>{{ 'FIRST_NAME' | translate }}</th>
+        <th>{{ 'LAST_NAME' | translate }}</th>
+        <th>{{ 'PHONE_NUMBER' | translate }}</th>
+        <th style="width: 150px;">{{ 'ACTIONS' | translate }}</th> <!-- Aksiyon için i18n ekleyebiliriz -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let contact of contacts | paginate: { itemsPerPage: 10, currentPage: page }
+        "
+        [ngClass]="{ 'table-active': contact.id === selectedContactId }"
+      >
+        <td>{{ contact.firstName }}</td>
+        <td>{{ contact.lastName }}</td>
+        <td>{{ contact.phoneNumber }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-warning btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#editContactModal"
+            (click)="editContact(contact)"
+          >
+            {{ 'EDIT' | translate }}
+          </button>
+
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="deleteContact(contact.id)"
+          >
+            {{ 'DELETE' | translate }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-center mt-3">
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+
+  <!-- Edit Contact Modal -->
+  <div
+    class="modal fade"
+    id="editContactModal"
+    tabindex="-1"
+    aria-labelledby="editContactModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editContactModalLabel">
+            {{ 'EDIT' | translate }} {{ 'CONTACT' | translate }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            (click)="cancelEdit()"
+          ></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedContact">
+          <form #editForm="ngForm">
+            <div class="mb-3">
+              <label for="editFirstName" class="form-label">
+                {{ 'FIRST_NAME' | translate }}
+              </label>
+              <input
+                type="text"
+                id="editFirstName"
+                class="form-control"
+                [(ngModel)]="selectedContact.firstName"
+                name="editFirstName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editLastName" class="form-label">
+                {{ 'LAST_NAME' | translate }}
+              </label>
+              <input
+                type="text"
+                id="editLastName"
+                class="form-control"
+                [(ngModel)]="selectedContact.lastName"
+                name="editLastName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editPhoneNumber" class="form-label">
+                {{ 'PHONE_NUMBER' | translate }}
+              </label>
+              <input
+                type="text"
+                id="editPhoneNumber"
+                class="form-control"
+                [(ngModel)]="selectedContact.phoneNumber"
+                name="editPhoneNumber"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="cancelEdit()"
+          >
+            {{ 'CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="updateContact(); closeModal()"
+          >
+            {{ 'SUBMIT' | translate }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-
-<!-- Add Contact Modal -->
-<div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form (ngSubmit)="addContact()" #contactForm="ngForm" class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addContactModalLabel">Add New Contact</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="firstName" class="form-label">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            required
-            [(ngModel)]="newContact.firstName"
-            class="form-control"
-            autocomplete="off"
-          />
+  <!-- Add Contact Modal -->
+  <div
+    class="modal fade"
+    id="addContactModal"
+    tabindex="-1"
+    aria-labelledby="addContactModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <form (ngSubmit)="addContact()" #contactForm="ngForm" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addContactModalLabel">
+            {{ 'ADD_CONTACT' | translate }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
-        <div class="mb-3">
-          <label for="lastName" class="form-label">Last Name</label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            required
-            [(ngModel)]="newContact.lastName"
-            class="form-control"
-            autocomplete="off"
-          />
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="firstName" class="form-label">
+              {{ 'FIRST_NAME' | translate }}
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              required
+              [(ngModel)]="newContact.firstName"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="lastName" class="form-label">
+              {{ 'LAST_NAME' | translate }}
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              required
+              [(ngModel)]="newContact.lastName"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="phoneNumber" class="form-label">
+              {{ 'PHONE_NUMBER' | translate }}
+            </label>
+            <input
+              type="text"
+              id="phoneNumber"
+              name="phoneNumber"
+              pattern="^\+[0-9]{12}$"
+              required
+              [(ngModel)]="newContact.phoneNumber"
+              class="form-control"
+              autocomplete="off"
+              placeholder="+905555555555"
+            />
+            <small class="text-muted">
+              {{ 'PHONE_FORMAT_INFO' | translate }}
+            </small>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="phoneNumber" class="form-label">Phone Number</label>
-          <input
-            type="text"
-            id="phoneNumber"
-            name="phoneNumber"
-            pattern="^\+[0-9]{12}$"
-            required
-            [(ngModel)]="newContact.phoneNumber"
-            class="form-control"
-            autocomplete="off"
-            placeholder="+905555555555"
-          />
-          <small class="text-muted">Format: + followed by 12 digits (e.g., +905555555555)</small>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            {{ 'CANCEL' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary">
+            {{ 'SUBMIT' | translate }}
+          </button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Add Contact</button>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>
-</div>
-

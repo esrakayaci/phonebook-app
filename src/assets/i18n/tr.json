@@ -1,0 +1,32 @@
+{
+  "TITLE": "Telefon Rehberi",
+  "ADD_CONTACT": "Kişi Ekle",
+  "FIRST_NAME": "Ad",
+  "LAST_NAME": "Soyad",
+  "PHONE_NUMBER": "Telefon Numarası",
+  "SUBMIT": "Kaydet",
+  "CANCEL": "İptal",
+  "DELETE": "Sil",
+  "EDIT": "Düzenle",
+  "TOTAL_CONTACTS": "Kayıtlı kişi sayısı",
+  "ACTIONS": "İşlemler",
+  "CONTACT": "Kişi",
+  "PHONE_FORMAT_INFO": "Format: + ile başlayıp 12 rakam (örnek: +905555555555)",
+
+  "SUCCESS": {
+    "TITLE": "Başarılı",
+    "ADDED": "Kişi başarıyla eklendi!",
+    "UPDATED": "Kişi başarıyla güncellendi!",
+    "DELETED": "Kişi başarıyla silindi!"
+  },
+  "ERROR": {
+    "TITLE": "Hata",
+    "FILL_ALL_FIELDS": "Lütfen tüm alanları doldurun.",
+    "ADD": "Kişi eklenirken bir hata oluştu.",
+    "UPDATE": "Kişi güncellenirken bir hata oluştu.",
+    "DELETE": "Kişi silinirken bir hata oluştu."
+  },
+  "CONFIRM": {
+    "DELETE": "Bu kişiyi silmek istediğinize emin misiniz?"
+  }
+}

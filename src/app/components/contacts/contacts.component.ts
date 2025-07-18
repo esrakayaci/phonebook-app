@@ -5,23 +5,24 @@ import { Contact, ContactService } from '../../services/contact.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+declare var window: any;
 
-declare var window: any; 
 @Component({
   selector: 'app-contacts',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxPaginationModule],
+  imports: [CommonModule, FormsModule, NgxPaginationModule,TranslateModule],
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
-
-
 export class ContactsComponent implements OnInit {
 
   contacts: Contact[] = [];
   selectedContact: Contact | null = null;
   selectedContactId: number | null = null;
   page: number = 1;
+  currentLang: string = 'en'; // default dil
 
   newContact: Partial<Contact> = {
     firstName: '',
@@ -31,8 +32,12 @@ export class ContactsComponent implements OnInit {
 
   constructor(
     private contactService: ContactService,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private translate: TranslateService
+  ) {
+    const browserLang = this.translate.getBrowserLang();
+    this.currentLang = browserLang && (browserLang === 'en' || browserLang === 'tr') ? browserLang : 'en';
+    this.translate.use(this.currentLang);}
 
   ngOnInit(): void {
     this.loadContacts();
@@ -46,47 +51,61 @@ export class ContactsComponent implements OnInit {
   }
 
   addContact() {
-  if (!this.newContact.firstName || !this.newContact.lastName || !this.newContact.phoneNumber) {
-    this.toastr.error('Please fill in all fields.', '❌ Error');
-    return;
-  }
-
-  this.contactService.create(this.newContact).subscribe({
-    next: () => {
-      this.loadContacts();
-      this.newContact = { firstName: '', lastName: '', phoneNumber: '' };
-
-      // Modalı kapat
-      const modalElement = document.getElementById('addContactModal');
-      if (modalElement) {
-        const modalInstance = window.bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-          modalInstance.hide();
-        }
-      }
-
-      this.toastr.success('Contact added successfully!', '✅ Added');
-    },
-    error: (err) => {
-      console.error('Error adding contact:', err);
-      this.toastr.error('An error occurred while adding the contact.', '❌ Error');
-    }
-  });
-}
-
-  deleteContact(id: number) {
-    if (!confirm('Are you sure you want to delete this contact?')) {
+    if (!this.newContact.firstName || !this.newContact.lastName || !this.newContact.phoneNumber) {
+      this.toastr.error(
+        this.translate.instant('ERROR.FILL_ALL_FIELDS'),
+        this.translate.instant('ERROR.TITLE')
+      );
       return;
     }
+
+    this.contactService.create(this.newContact).subscribe({
+      next: () => {
+        this.loadContacts();
+        this.newContact = { firstName: '', lastName: '', phoneNumber: '' };
+
+        const modalElement = document.getElementById('addContactModal');
+        if (modalElement) {
+          const modalInstance = window.bootstrap.Modal.getInstance(modalElement);
+          if (modalInstance) {
+            modalInstance.hide();
+          }
+        }
+
+        this.toastr.success(
+          this.translate.instant('SUCCESS.ADDED'),
+          this.translate.instant('SUCCESS.TITLE')
+        );
+      },
+      error: (err) => {
+        console.error('Error adding contact:', err);
+        this.toastr.error(
+          this.translate.instant('ERROR.ADD'),
+          this.translate.instant('ERROR.TITLE')
+        );
+      }
+    });
+  }
+
+  deleteContact(id: number) {
+    const confirmation = confirm(this.translate.instant('CONFIRM.DELETE'));
+
+    if (!confirmation) return;
 
     this.contactService.delete(id).subscribe({
       next: () => {
         this.loadContacts();
-        this.toastr.success('Contact deleted successfully!', '✅ Deleted');
+        this.toastr.success(
+          this.translate.instant('SUCCESS.DELETED'),
+          this.translate.instant('SUCCESS.TITLE')
+        );
       },
       error: (err) => {
         console.error('Error deleting contact:', err);
-        this.toastr.error('An error occurred while deleting the contact.', '❌ Error');
+        this.toastr.error(
+          this.translate.instant('ERROR.DELETE'),
+          this.translate.instant('ERROR.TITLE')
+        );
       }
     });
   }
@@ -97,31 +116,35 @@ export class ContactsComponent implements OnInit {
   }
 
   updateContact() {
-  if (!this.selectedContact) return;
+    if (!this.selectedContact) return;
 
-  this.contactService.update(this.selectedContact).subscribe({
-    next: () => {
-      this.loadContacts();
-      this.selectedContact = null;
+    this.contactService.update(this.selectedContact).subscribe({
+      next: () => {
+        this.loadContacts();
+        this.selectedContact = null;
 
-      // Modalı kapat
-      const modalElement = document.getElementById('editContactModal');
-      if (modalElement) {
-        const modalInstance = window.bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-          modalInstance.hide();
+        const modalElement = document.getElementById('editContactModal');
+        if (modalElement) {
+          const modalInstance = window.bootstrap.Modal.getInstance(modalElement);
+          if (modalInstance) {
+            modalInstance.hide();
+          }
         }
+
+        this.toastr.success(
+          this.translate.instant('SUCCESS.UPDATED'),
+          this.translate.instant('SUCCESS.TITLE')
+        );
+      },
+      error: (err) => {
+        console.error('Error updating contact:', err);
+        this.toastr.error(
+          this.translate.instant('ERROR.UPDATE'),
+          this.translate.instant('ERROR.TITLE')
+        );
       }
-
-      this.toastr.success('Contact updated successfully!', '✅ Updated');
-    },
-    error: (err) => {
-      console.error('Error updating contact:', err);
-      this.toastr.error('An error occurred while updating the contact.', '❌ Update Failed');
-    }
-  });
-}
-
+    });
+  }
 
   cancelEdit() {
     this.selectedContact = null;
@@ -135,6 +158,14 @@ export class ContactsComponent implements OnInit {
     if (modal) {
       modal.hide();
     }
+  }
+  changeLanguage(lang: string) {
+    this.translate.use(lang);
+    this.currentLang = lang;
+}
+switchLanguage(lang: string) {
+    this.translate.use(lang);
+    this.currentLang = lang;
   }
 
 }
